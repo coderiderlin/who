@@ -35,9 +35,6 @@ function getMousePos(canvas, evt) {
     };
 }
 
-canvas.addEventListener('mousemove', function (evt) {
-    w.mousePos = getMousePos(canvas, evt);
-}, false);
 
 
 
@@ -94,11 +91,11 @@ function drawInfo() {
     var dists = [];
     //weight
     for (var i = 0; i < weights.length; i++) {
-        dists.push({ dist: CalcDistance(w.mousePos, weights[i]), dot: weights[i] });
+        dists.push({ dist: CalcDistance(w.mousePos, imgbox.toBoxPos(weights[i])), dot: imgbox.toBoxPos(weights[i]) });
     }
     //length
     for (var i = 0; i < lengths.length; i++) {
-        dists.push({ dist: CalcDistance(w.mousePos, lengths[i]), dot: lengths[i] });
+        dists.push({ dist: CalcDistance(w.mousePos, imgbox.toBoxPos(lengths[i])), dot: imgbox.toBoxPos(lengths[i]) });
     }
 
     //get min dists
@@ -118,7 +115,7 @@ function drawInfo() {
 //drawDot
 function drawDot(pos, r, color) {
     ctx.fillStyle = color;
-    ctx.fillRect(pos.x - r / 2, pos.y - r / 2, r, r);
+    ctx.fillRect(pos.x+imgbox.x - r / 2, pos.y+imgbox.y - r / 2, r, r);
 }
 function mousePosInfo() {
 
@@ -128,13 +125,13 @@ function mousePosInfo() {
     ctx.fillRect(infoPos.x-margin,infoPos.y-margin,280,50);
     ctx.fillStyle = "#00ff00ff";
     ctx.font = "32px Helvetica";
-    ctx.fillText("x:" + (w.mousePos.x / scale).toFixed(2) + ",y:" + (w.mousePos.y / scale).toFixed(2), infoPos.x,infoPos.y)
+    ctx.fillText("x:" + ((w.mousePos.x-imgbox.x) / scale).toFixed(0) + ",y:" + ((w.mousePos.y-imgbox.y) / scale).toFixed(0), infoPos.x,infoPos.y)
 
 }
 function outputDbgInfo() {
 
-    ctx.fillStyle = "green";
-    ctx.font = "12px Helvetica";
+    ctx.fillStyle = "white";
+    ctx.font = "32px Helvetica";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     debugInfo = "renderTimes:" + renderTimes + " updateTimes:" + updateTimes + " r-u:" + (renderTimes - updateTimes) + " curDelta:" + curDelta * 1000 + " ms"
@@ -161,7 +158,7 @@ function drawBG()
     {
         scaleWidth = scale * bgImage.width
         scaleHeight = scale * bgImage.height
-        ctx.drawImage(bgImage, 0, 0, scaleWidth, scaleHeight)
+        ctx.drawImage(bgImage, imgbox.x, imgbox.y, scaleWidth, scaleHeight)
     }
 }
 function drawTagDot()
@@ -176,6 +173,45 @@ function drawTagDot()
     }
 }
 //render func
+
+//imgbox to control the position draw start
+var imgbox={
+    x:0,
+    y:0,
+    beGrag:false,
+    drag:{x:0,y:0},
+    toBoxPos:function(pos)
+    {
+        return {
+            x:pos.x+imgbox.x,
+            y:pos.y+imgbox.y
+        }
+    }
+}
+
+canvas.addEventListener('mousemove', function (evt) {
+    w.mousePos = getMousePos(canvas, evt);
+    if(imgbox.beGrag)
+    {
+        imgbox.x=evt.clientX+imgbox.drag.x;
+        imgbox.y=evt.clientY+imgbox.drag.y;
+    }
+}, false);
+
+
+//mousedown and mouseup to detecte the drag
+window.addEventListener("mousedown",function(evt)
+{
+    imgbox.beGrag=true;
+    imgbox.drag.x=imgbox.x-mousePos.x;
+    imgbox.drag.y=imgbox.y-mousePos.y;
+    console.log("mousedown:"+evt);
+});
+window.addEventListener("mouseup",function(evt)
+{
+    imgbox.beGrag=false;
+    console.log("mouseup:"+evt);
+});
 
 //scale
 // scale = hh / bgImage.height
