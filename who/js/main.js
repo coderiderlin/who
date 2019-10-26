@@ -14,8 +14,6 @@ console.log("main init.")
 // Create the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 2228;
-canvas.height = 3331;
 document.body.appendChild(canvas);
 
 // Background image
@@ -61,30 +59,29 @@ function CalcDistance(p1, p2) {
     return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 }
 
-function drawInfoAround(dot)
-{
-    var r=50
-    var l=15
+function drawInfoAround(dot) {
+    var r = 50
+    var l = 15
     ctx.strokeStyle = "red";
     ctx.lineWidth = 4
     ctx.beginPath();
-    var ex=dot.dot.x
-    var ey=dot.dot.y
-    ctx.moveTo(ex-r/2+l,ey-r/2)
-    ctx.lineTo(ex-r/2,ey-r/2)
-    ctx.lineTo(ex-r/2,ey-r/2+l)
-   
-    ctx.moveTo(ex+r/2,ey+r/2-l)
-    ctx.lineTo(ex+r/2,ey+r/2)
-    ctx.lineTo(ex+r/2-l,ey+r/2)
+    var ex = dot.dot.x
+    var ey = dot.dot.y
+    ctx.moveTo(ex - r / 2 + l, ey - r / 2)
+    ctx.lineTo(ex - r / 2, ey - r / 2)
+    ctx.lineTo(ex - r / 2, ey - r / 2 + l)
 
-    ctx.moveTo(ex+r/2-l,ey-r/2)
-    ctx.lineTo(ex+r/2,ey-r/2)
-    ctx.lineTo(ex+r/2,ey-r/2+l)
+    ctx.moveTo(ex + r / 2, ey + r / 2 - l)
+    ctx.lineTo(ex + r / 2, ey + r / 2)
+    ctx.lineTo(ex + r / 2 - l, ey + r / 2)
 
-    ctx.moveTo(ex-r/2,ey+r/2-l)
-    ctx.lineTo(ex-r/2,ey+r/2)
-    ctx.lineTo(ex-r/2+l,ey+r/2)
+    ctx.moveTo(ex + r / 2 - l, ey - r / 2)
+    ctx.lineTo(ex + r / 2, ey - r / 2)
+    ctx.lineTo(ex + r / 2, ey - r / 2 + l)
+
+    ctx.moveTo(ex - r / 2, ey + r / 2 - l)
+    ctx.lineTo(ex - r / 2, ey + r / 2)
+    ctx.lineTo(ex - r / 2 + l, ey + r / 2)
 
     ctx.stroke();
 }
@@ -92,31 +89,28 @@ function drawInfoAround(dot)
 //drawInfo
 function drawInfo() {
     //check if mouse position is close to a dot enough
-    var min_close_dist =50;
+    var min_close_dist = 50;
     //get all  distance for each dot
     var dists = [];
     //weight
     for (var i = 0; i < weights.length; i++) {
-        dists.push({dist:CalcDistance(w.mousePos,weights[i]),dot:weights[i]});
+        dists.push({ dist: CalcDistance(w.mousePos, weights[i]), dot: weights[i] });
     }
     //length
     for (var i = 0; i < lengths.length; i++) {
-        dists.push({dist:CalcDistance(w.mousePos,lengths[i]),dot:lengths[i]});
+        dists.push({ dist: CalcDistance(w.mousePos, lengths[i]), dot: lengths[i] });
     }
 
     //get min dists
-    min_dist=dists[0];
-    for(var i=1;i<dists.length;i++)
-    {
-        if(min_dist.dist>dists[i].dist)
-        {
-            min_dist=dists[i]
+    min_dist = dists[0];
+    for (var i = 1; i < dists.length; i++) {
+        if (min_dist.dist > dists[i].dist) {
+            min_dist = dists[i]
         }
     }
 
     //draw the info around the min dist dot
-    if(min_dist.dist<min_close_dist)
-    {
+    if (min_dist.dist < min_close_dist) {
         drawInfoAround(min_dist)
     }
 
@@ -126,39 +120,27 @@ function drawDot(pos, r, color) {
     ctx.fillStyle = color;
     ctx.fillRect(pos.x - r / 2, pos.y - r / 2, r, r);
 }
-//render func
-var renderTimes = 0;
-var render = function () {
-    renderTimes++;
+function mousePosInfo() {
 
-    ww = document.body.clientWidth
-    hh = document.body.clientHeight
-    //bk color
-    ctx.fillStyle = '#000000ff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    //scale
-    // scale = hh / bgImage.height
-    scale = 1
-    //bk image
-    if (bgReady) //ensure the image has been loaded
-    {
-        scaleWidth = scale * bgImage.width
-        scaleHeight = scale * bgImage.height
-        ctx.drawImage(bgImage, 0, 0, scaleWidth, scaleHeight)
-    }
+    var infoPos={x:w.mousePos.x + 30, y:w.mousePos.y + 30}
+    ctx.fillStyle = "#535353cc";
+    var margin=10
+    ctx.fillRect(infoPos.x-margin,infoPos.y-margin,280,50);
+    ctx.fillStyle = "#00ff00ff";
+    ctx.font = "32px Helvetica";
+    ctx.fillText("x:" + (w.mousePos.x / scale).toFixed(2) + ",y:" + (w.mousePos.y / scale).toFixed(2), infoPos.x,infoPos.y)
 
-    // debug info
+}
+function outputDbgInfo() {
+
     ctx.fillStyle = "green";
     ctx.font = "12px Helvetica";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     debugInfo = "renderTimes:" + renderTimes + " updateTimes:" + updateTimes + " r-u:" + (renderTimes - updateTimes) + " curDelta:" + curDelta * 1000 + " ms"
     ctx.fillText(debugInfo, 10, 10);
-
-    //mouse pos
-    ctx.font = "32px Helvetica";
-    ctx.fillText("x:" + (w.mousePos.x / scale).toFixed(2) + ",y:" + (w.mousePos.y / scale).toFixed(2), w.mousePos.x + 30, w.mousePos.y + 30)
-
+}
+function drawCross() {
     ctx.strokeStyle = "green";
     ctx.lineWidth = 1.5
     ctx.beginPath();
@@ -167,8 +149,23 @@ var render = function () {
     ctx.moveTo(0, w.mousePos.y)
     ctx.lineTo(canvas.width, w.mousePos.y)
     ctx.stroke();
-
-    //tag dot
+}
+function drawBG()
+{
+    //bk color
+    ctx.fillStyle = '#000000ff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+   
+    //bk image
+    if (bgReady) //ensure the image has been loaded
+    {
+        scaleWidth = scale * bgImage.width
+        scaleHeight = scale * bgImage.height
+        ctx.drawImage(bgImage, 0, 0, scaleWidth, scaleHeight)
+    }
+}
+function drawTagDot()
+{
     //weight
     for (var i = 0; i < weights.length; i++) {
         drawDot(weights[i], 8, "red");
@@ -177,7 +174,26 @@ var render = function () {
     for (var i = 0; i < lengths.length; i++) {
         drawDot(lengths[i], 8, "red");
     }
+}
+//render func
 
+//scale
+// scale = hh / bgImage.height
+var scale = 1
+
+var renderTimes = 0;
+var render = function () {
+    renderTimes++;
+
+    canvas.width = w.innerWidth - 10;
+    canvas.height = w.innerHeight - 20;
+    
+
+    drawBG();
+    outputDbgInfo();
+    mousePosInfo();
+    drawCross();
+    drawTagDot();
     //draw info if near a dot
     drawInfo();
 
