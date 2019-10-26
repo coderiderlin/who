@@ -1,9 +1,11 @@
 //init data
 weights = [
-    { x: 1467.17, y: 1768.84, ke: 10400, weight: "10.4kg", addtime: "20191026", tooktime: "20191023", note: "����Ь�ӳ���21����" }
+    { x: 337.0, y: 2526.0, ke: 4080, weight: "4.080kg", addtime: "20191026", tooktime: "20180522", note: "非常顺利顺产的哟！妈妈超厉害！" },
+    { x: 349.0, y: 2552.14, ke: 3800, weight: "3.80kg", addtime: "20191026", tooktime: "20180529", note: "一周后落剽啦" },
+    { x: 1467.17, y: 1768.84, ke: 10400, weight: "10.4kg", addtime: "20191026", tooktime: "20191023", note: "穿着鞋子称有21斤了" },
 ]
 lengths = [
-    { x: 1470, y: 729.00, cm: 82, addtime: "20191026", tooktime: "20191026", note: "С����˧" }
+    { x: 1470, y: 729.00, cm: 82, addtime: "20191026", tooktime: "20191026", note: "小靖好帅" }
 ]
 //init some globals
 var w = window;
@@ -52,7 +54,8 @@ var update = function (modifier) {
     curDelta = modifier;
     updateTimes++;
 }
-function getDist(p1, p2) {
+
+function CalcDistance(p1, p2) {
     var dx = Math.abs(p2.x - p1.x);
     var dy = Math.abs(p2.y - p1.y);
     return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -89,16 +92,16 @@ function drawInfoAround(dot)
 //drawInfo
 function drawInfo() {
     //check if mouse position is close to a dot enough
-    var min_close_dist = 20;
+    var min_close_dist =50;
     //get all  distance for each dot
     var dists = [];
     //weight
     for (var i = 0; i < weights.length; i++) {
-        dists.push({dist:getDist(w.mousePos,weights[i]),dot:weights[i]});
+        dists.push({dist:CalcDistance(w.mousePos,weights[i]),dot:weights[i]});
     }
     //length
     for (var i = 0; i < lengths.length; i++) {
-        dists.push({dist:getDist(w.mousePos,lengths[i]),dot:lengths[i]});
+        dists.push({dist:CalcDistance(w.mousePos,lengths[i]),dot:lengths[i]});
     }
 
     //get min dists
@@ -112,7 +115,7 @@ function drawInfo() {
     }
 
     //draw the info around the min dist dot
-    if(min_dist.dist<50)
+    if(min_dist.dist<min_close_dist)
     {
         drawInfoAround(min_dist)
     }
@@ -154,12 +157,12 @@ var render = function () {
 
     //mouse pos
     ctx.font = "32px Helvetica";
-    ctx.fillText("x:" + (w.mousePos.x / scale).toFixed(2) + ",y:" + (w.mousePos.y / scale).toFixed(2), w.mousePos.x + 10, w.mousePos.y + 30)
+    ctx.fillText("x:" + (w.mousePos.x / scale).toFixed(2) + ",y:" + (w.mousePos.y / scale).toFixed(2), w.mousePos.x + 30, w.mousePos.y + 30)
 
     ctx.strokeStyle = "green";
     ctx.lineWidth = 1.5
     ctx.beginPath();
-    ctx.lineTo(w.mousePos.x, 0)
+    ctx.moveTo(w.mousePos.x, 0)
     ctx.lineTo(w.mousePos.x, canvas.height)
     ctx.moveTo(0, w.mousePos.y)
     ctx.lineTo(canvas.width, w.mousePos.y)
