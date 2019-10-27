@@ -1,8 +1,9 @@
 //init data
+brithday="20180522"
 weights = [
-    { x: 337.0, y: 2526.0, ke: 4080, weight: "4.080kg", addtime: "20191026", tooktime: "20180522", note: "非常顺利顺产的哟！妈妈超厉害！" },
-    { x: 349.0, y: 2552.14, ke: 3800, weight: "3.80kg", addtime: "20191026", tooktime: "20180529", note: "一周后落剽啦" },
-    { x: 1467.17, y: 1768.84, ke: 10400, weight: "10.4kg", addtime: "20191026", tooktime: "20191023", note: "穿着鞋子称有21斤了" },
+    { x: 337.0, y: 2526.0, ke: 4080, weight: "4.080", addtime: "20191026", tooktime: "20180522", note: "非常顺利顺产的哟！妈妈超级厉害！" },
+    { x: 349.0, y: 2552.14, ke: 3800, weight: "3.80", addtime: "20191026", tooktime: "20180529", note: "一周后落剽了" },
+    { x: 1467.17, y: 1768.84, ke: 10400, weight: "10.4", addtime: "20191026", tooktime: "20191023", note: "穿着鞋子称有21斤了" },
 ]
 lengths = [
     { x: 1470, y: 729.00, cm: 82, addtime: "20191026", tooktime: "20191026", note: "小靖好帅" }
@@ -122,10 +123,14 @@ function mousePosInfo() {
     var infoPos={x:w.mousePos.x + 30, y:w.mousePos.y + 30}
     ctx.fillStyle = "#535353cc";
     var margin=10
-    ctx.fillRect(infoPos.x-margin,infoPos.y-margin,280,50);
+    ctx.fillRect(infoPos.x-margin,infoPos.y-margin,280,100);
     ctx.fillStyle = "#00ff00ff";
     ctx.font = "32px Helvetica";
+
+    var weiP={x:(w.mousePos.x-imgbox.x) / scale,y:(w.mousePos.y-imgbox.y) / scale}
+    weiP=weightbox.toWeightBoxPos(weiP)
     ctx.fillText("x:" + ((w.mousePos.x-imgbox.x) / scale).toFixed(0) + ",y:" + ((w.mousePos.y-imgbox.y) / scale).toFixed(0), infoPos.x,infoPos.y)
+    ctx.fillText("" + weiP.x.toFixed(2)+ " m," +weiP.y.toFixed(2)+" kg", infoPos.x,infoPos.y+40)
 
 }
 function outputDbgInfo() {
@@ -138,7 +143,7 @@ function outputDbgInfo() {
     ctx.fillText(debugInfo, 10, 10);
 }
 function drawCross() {
-    ctx.strokeStyle = "green";
+    ctx.strokeStyle = "#00ff00ff";
     ctx.lineWidth = 1.5
     ctx.beginPath();
     ctx.moveTo(w.mousePos.x, 0)
@@ -189,6 +194,40 @@ var imgbox={
     }
 }
 
+//weightbox for coordinate mapping
+var weightbox={
+    weightPoint1:{x:0,y:1.4},
+    imagePoint1:{x:336,y:2852},
+
+    weightPoint2:{x:3.0,y:3.0},
+    imagePoint2:{x:536,y:2653},
+
+    weightPointOriginBase:{x:0,y:0},
+
+    toWeightBoxPos:function(ipos)
+    {
+        var wx=Math.abs(this.weightPoint1.x-this.weightPoint2.x);
+        var ix=Math.abs(this.imagePoint1.x-this.imagePoint2.x);
+
+        var wy=Math.abs(this.weightPoint1.y-this.weightPoint2.y);
+        var iy=Math.abs(this.imagePoint1.y-this.imagePoint2.y);
+        var wiscale={ x:wx/ix, y:wy/iy}
+        this.weightPointOriginBase.x=this.imagePoint1.x-this.weightPoint1.x/wiscale.x;
+        this.weightPointOriginBase.y=this.imagePoint1.y+this.weightPoint1.y/wiscale.y;
+        return {
+            x:(ipos.x-this.weightPointOriginBase.x)*wiscale.x,
+            y:(ipos.y-this.weightPointOriginBase.y)*wiscale.y*-1 //-1 for reverse y
+        }
+    }
+}
+
+//lenghtBox for coordinate mapping
+var lenghtbox={
+    lenghtPoint1:{},
+    imagePoint1:{},
+    lenghtPoint2:{},
+    imagePoint2:{},
+}
 canvas.addEventListener('mousemove', function (evt) {
     w.mousePos = getMousePos(canvas, evt);
     if(imgbox.beGrag)
