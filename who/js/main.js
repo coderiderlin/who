@@ -6,7 +6,8 @@ weights = [
     { x: 1467.17, y: 1768.84, ke: 10400, weight: "10.4", addtime: "20191026", tooktime: "20191023", note: "穿着鞋子称有21斤了" },
 ]
 lengths = [
-    { x: 1470, y: 729.00, cm: 82, addtime: "20191026", tooktime: "20191026", note: "小靖好帅" }
+    { x: 1470, y: 729.00, cm: 82, addtime: "20191026", tooktime: "20191026", note: "小靖好帅" },
+    { x: 1538, y: 719.00, cm: 82.5, addtime: "20191124", tooktime: "20191124", note: "今天靖爬山扫落叶了" }
 ]
 //init some globals
 var w = window;
