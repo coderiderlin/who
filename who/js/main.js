@@ -129,8 +129,11 @@ function mousePosInfo() {
 
     var weiP={x:(w.mousePos.x-imgbox.x) / scale,y:(w.mousePos.y-imgbox.y) / scale}
     weiP=weightbox.toWeightBoxPos(weiP)
+    intX=Math.floor(weiP.x)
+    decimalPlaceX=weiP.x-intX
+    xInDay=(decimalPlaceX*100*30/100).toFixed(0)
     ctx.fillText("x:" + ((w.mousePos.x-imgbox.x) / scale).toFixed(0) + ",y:" + ((w.mousePos.y-imgbox.y) / scale).toFixed(0), infoPos.x,infoPos.y)
-    ctx.fillText("" + weiP.x.toFixed(2)+ " m," +weiP.y.toFixed(2)+" kg", infoPos.x,infoPos.y+40)
+    ctx.fillText("" + weiP.x.toFixed(0)+ "m "+xInDay+"d," +weiP.y.toFixed(2)+" kg", infoPos.x,infoPos.y+40)
 
 }
 function outputDbgInfo() {
@@ -197,7 +200,7 @@ var imgbox={
 //weightbox for coordinate mapping
 var weightbox={
     weightPoint1:{x:0,y:1.4},
-    imagePoint1:{x:336,y:2852},
+    imagePoint1:{x:336,y:2853},
 
     weightPoint2:{x:3.0,y:3.0},
     imagePoint2:{x:536,y:2653},
@@ -242,8 +245,8 @@ canvas.addEventListener('mousemove', function (evt) {
 window.addEventListener("mousedown",function(evt)
 {
     imgbox.beGrag=true;
-    imgbox.drag.x=imgbox.x-mousePos.x;
-    imgbox.drag.y=imgbox.y-mousePos.y;
+    imgbox.drag.x=imgbox.x-mousePos.x-8;
+    imgbox.drag.y=imgbox.y-mousePos.y-8;
     console.log("mousedown:"+evt);
 });
 window.addEventListener("mouseup",function(evt)
