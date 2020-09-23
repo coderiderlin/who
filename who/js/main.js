@@ -7,7 +7,8 @@ weights = [
 ]
 lengths = [
     { x: 1470, y: 729.00, cm: 82, addtime: "20191026", tooktime: "20191026", note: "小靖好帅" },
-    { x: 1538, y: 719.00, cm: 82.5, addtime: "20191124", tooktime: "20191124", note: "今天靖爬山扫落叶了" }
+    { x: 1538, y: 719.00, cm: 82.5, addtime: "20191124", tooktime: "20191124", note: "今天靖爬山扫落叶了" },
+    { x: 2170, y: 505.00, cm: 91.0, addtime: "20200923", tooktime: "20200908", note: "昨天靖上课时带头抱抱老师" }
 ]
 //init some globals
 var w = window;
